@@ -52,6 +52,7 @@ exports.createUser = async (req, res) => {
             otp: otp
         }
         res.status(201).json({
+            status: 200,
             message: "signed up successfully",
             data: obj2,
         });
