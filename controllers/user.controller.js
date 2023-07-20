@@ -29,19 +29,31 @@ exports.getUserById = async (req, res) => {
 
 // Create a new user
 exports.createUser = async (req, res) => {
+    const otp = generateOTP();
+    let otps = bcrypt.hashSync(otp, 8);
     const user = new User({
         fullName: req.body.fullName,
         mobile: req.body.mobile,
         carModel: req.body.carModel,
         carNumber: req.body.carNumber,
         fuel: req.body.fuel,
+        otp: otps
     });
 
     try {
         const newUser = await user.save();
+        let obj2 = {
+            _id: newUser._id,
+            fullName: req.body.fullName,
+            mobile: req.body.mobile,
+            carModel: req.body.carModel,
+            carNumber: req.body.carNumber,
+            fuel: req.body.fuel,
+            otp: otp
+        }
         res.status(201).json({
             message: "signed up successfully",
-            data: newUser,
+            data: obj2,
         });
     } catch (err) {
         res.status(400).json({ message: err.message });
