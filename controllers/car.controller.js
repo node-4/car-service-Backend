@@ -82,7 +82,7 @@ exports.createCar = async (req, res) => {
             carStatus,
             description,
         } = req.body;
-        const image = req.file.location;
+        const image = req.file.path;
         // console.log(image);
         const car = new Car({
             image,
@@ -350,56 +350,56 @@ exports.compareCars1 = async (req, res) => {
 };
 const { ObjectId } = require("mongodb");
 
-exports.compareCars = async (req, res) => {
-    try {
-        const car1Id = req.query.car1;
-        const car2Id = req.query.car2;
+// exports.compareCars = async (req, res) => {
+//     try {
+//         const car1Id = req.query.car1;
+//         const car2Id = req.query.car2;
 
-        // Match cars by their ids.
-        const cars = await Car.aggregate([
-            {
-                $match: {
-                    _id: { $in: [ObjectId(car1Id), ObjectId(car2Id)] },
-                },
-            },
-            // Group the cars by null object to create one document for all the cars.
-            {
-                $group: {
-                    _id: null,
-                    cars: { $push: "$$ROOT" },
-                },
-            },
-            // Project only required fields of the cars objects
-            {
-                $project: {
-                    _id: 0,
-                    cars: {
-                        _id: true,
-                        manufacturer: true,
-                        model: true,
-                        year: true,
-                        bodyType: true,
-                        color: true,
-                        price: true,
-                    },
-                },
-            },
-        ]);
+//         // Match cars by their ids.
+//         const cars = await Car.aggregate([
+//             {
+//                 $match: {
+//                     _id: { $in: [ObjectId(car1Id), ObjectId(car2Id)] },
+//                 },
+//             },
+//             // Group the cars by null object to create one document for all the cars.
+//             {
+//                 $group: {
+//                     _id: null,
+//                     cars: { $push: "$$ROOT" },
+//                 },
+//             },
+//             // Project only required fields of the cars objects
+//             {
+//                 $project: {
+//                     _id: 0,
+//                     cars: {
+//                         _id: true,
+//                         manufacturer: true,
+//                         model: true,
+//                         year: true,
+//                         bodyType: true,
+//                         color: true,
+//                         price: true,
+//                     },
+//                 },
+//             },
+//         ]);
 
-        if (!cars.length) {
-            return res.status(404).json({ message: "Cars not found" });
-        }
+//         if (!cars.length) {
+//             return res.status(404).json({ message: "Cars not found" });
+//         }
 
-        // Compare the cars and send response.
-        const comparedCars = compareTwoCars(car1, car2);
-        res.status(200).json(comparedCars);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({
-            message: "Something went wrong",
-        });
-    }
-};
+//         // Compare the cars and send response.
+//         const comparedCars = compareTwoCars(car1, car2);
+//         res.status(200).json(comparedCars);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({
+//             message: "Something went wrong",
+//         });
+//     }
+// };
 
 function compareTwoCars(car1, car2) {
     // A function to handle the comparison of two cars.

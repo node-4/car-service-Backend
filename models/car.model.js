@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+const mongoosePaginate = require("mongoose-paginate");
+const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const carSchema = new mongoose.Schema(
     {
         image: {
@@ -7,19 +8,15 @@ const carSchema = new mongoose.Schema(
         },
         manufacturer: {
             type: String,
-            required: true,
         },
         model: {
             type: String,
-            required: true,
         },
         year: {
             type: Number,
-            required: true,
         },
         bodyType: {
             type: String,
-            required: true,
         },
         variant: {
             type: String,
@@ -28,34 +25,26 @@ const carSchema = new mongoose.Schema(
             type: String,
             //     required: true,
         },
-
         color: {
             type: String,
-            required: true,
         },
         mileage: {
             type: Number,
-            required: true,
         },
         transmission: {
             type: String,
-            required: true,
         },
         fuelType: {
             type: String,
-            required: true,
         },
         engineSize: {
             type: String,
-            required: true,
         },
         price: {
             type: Number,
-            required: true,
         },
         kmDriven: {
             type: Number,
-            // required: true,
         },
         state: {
             type: String,
@@ -70,27 +59,8 @@ const carSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-// carSchema.pre("save", function (next) {
-//     if (
-//         !this.manufacturer ||
-//         !this.model ||
-//         !this.year ||
-//         !this.color ||
-//         !this.mileage ||
-//         !this.transmission ||
-//         !this.fuelType ||
-//         !this.engineSize ||
-//         !this.price ||
-//         !this.carStatus ||
-//         !this.state ||
-//         !this.city ||
-//         !this.variant
-//     ) {
-//         return next(new Error("All fields are required"));
-//     }
-//     next();
-// });
-
+carSchema.plugin(mongoosePaginate);
+carSchema.plugin(mongooseAggregatePaginate);
 const Car = mongoose.model("Car", carSchema);
 
 module.exports = Car;
