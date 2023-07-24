@@ -7,23 +7,30 @@ const carSchema = new mongoose.Schema(
             type: String,
         },
         manufacturer: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "brand",
         },
         model: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "bodyfuelmodelvarient",
+        },
+        fuelType: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "bodyfuelmodelvarient",
+        },
+        bodyType: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "bodyfuelmodelvarient",
+        },
+        variant: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "bodyfuelmodelvarient",
         },
         year: {
             type: Number,
         },
-        bodyType: {
-            type: String,
-        },
-        variant: {
-            type: String,
-        },
         carStatus: {
             type: String,
-            //     required: true,
         },
         color: {
             type: String,
@@ -32,9 +39,6 @@ const carSchema = new mongoose.Schema(
             type: Number,
         },
         transmission: {
-            type: String,
-        },
-        fuelType: {
             type: String,
         },
         engineSize: {
@@ -62,5 +66,4 @@ const carSchema = new mongoose.Schema(
 carSchema.plugin(mongoosePaginate);
 carSchema.plugin(mongooseAggregatePaginate);
 const Car = mongoose.model("Car", carSchema);
-
 module.exports = Car;

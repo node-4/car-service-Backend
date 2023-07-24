@@ -13,7 +13,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
         cloudinary: cloudinary,
         params: {
-                folder: "images/image",
+                folder: "images/Car",
                 allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF", "avif"],
         },
 });
@@ -21,6 +21,7 @@ const upload = multer({ storage: storage });
 const { authJwt, objectId } = require("../middlewares");
 // Get all cars
 router.get("/cars", carController.getAllCars);
+router.get("/allCarsget", carController.allCarsget);
 
 // Create a new car
 router.post("/cars",

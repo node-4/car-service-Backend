@@ -1,46 +1,23 @@
 const Car = require("../models/car.model");
 const { uploadImage } = require("../services/uploadImage");
-// Get all cars
-exports.getAllCars = async (req, res) => {
+exports.allCarsget = async (req, res) => {
     try {
         let query = {};
-
-        if (req.query.manufacturer) {
-            query.manufacturer = {
-                $regex: req.query.manufacturer,
-                $options: "i",
-            };
-        }
-
-        if (req.query.model) {
-            query.model = { $regex: req.query.model, $options: "i" };
-        }
-
         if (req.query.color) {
             query.color = { $regex: req.query.color, $options: "i" };
         }
-
         if (req.query.transmission) {
             query.transmission = {
                 $regex: req.query.transmission,
                 $options: "i",
             };
         }
-
-        if (req.query.fuelType) {
-            query.fuelType = { $regex: req.query.fuelType, $options: "i" };
-        }
         if (req.query.carStatus) {
             query.carStatus = { $regex: req.query.carStatus, $options: "i" };
         }
-        if (req.query.bodyType) {
-            query.bodyType = { $regex: req.query.bodyType, $options: "i" };
-        }
-
         if (req.query.engineSize) {
             query.engineSize = req.query.engineSize;
         }
-
         if (req.query.priceMin && req.query.priceMax) {
             query.price = {
                 $gte: req.query.priceMin,
@@ -51,17 +28,87 @@ exports.getAllCars = async (req, res) => {
         } else if (req.query.priceMax) {
             query.price = { $lte: parseInt(req.query.priceMax) };
         }
-        const cars = await Car.find(query).lean();
+        const cars = await Car.find(query).lean().populate('manufacturer model fuelType bodyType variant');
         if (cars.length === 0) {
             return res.status(404).json({ message: "No cars found" });
         }
-        res.json({ message: "Cars data found", data: cars });
+        let productsCount = await Car.count()
+        res.status(200).json({ status: 200, message: "Cars data found.", data: cars, count: productsCount });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: err.message });
     }
 };
+exports.getAllCars = async (req, res, next) => {
+    try {
+        const productsCount = await Car.count();
+        if (req.query.search == (null || undefined)) {
+            let data1 = [
+                {
+                    $lookup: { from: "brands", localField: "manufacturer", foreignField: "_id", as: "manufacturer" },
+                },
+                { $unwind: "$manufacturer" },
+                {
+                    $lookup: { from: "bodyfuelmodelvarients", localField: "model", foreignField: "_id", as: "model", },
+                },
+                { $unwind: "$model" },
+                {
+                    $lookup: { from: "bodyfuelmodelvarients", localField: "fuelType", foreignField: "_id", as: "fuelType", },
+                },
+                { $unwind: "$fuelType" },
+                {
+                    $lookup: { from: "bodyfuelmodelvarients", localField: "bodyType", foreignField: "_id", as: "bodyType", },
+                },
+                { $unwind: "$bodyType" },
+                {
+                    $lookup: { from: "bodyfuelmodelvarients", localField: "variant", foreignField: "_id", as: "variant", },
+                },
+                { $unwind: "$variant" },
 
+            ]
+            apiFeature = await Car.aggregate(data1);
+            res.status(200).json({ status: 200, message: "Cars data found.", data: apiFeature, count: productsCount });
+        } else {
+            let apiFeature = await Car.aggregate([
+                {
+                    $lookup: { from: "brands", localField: "manufacturer", foreignField: "_id", as: "manufacturer" },
+                },
+                { $unwind: "$manufacturer" },
+                {
+                    $lookup: { from: "bodyfuelmodelvarients", localField: "model", foreignField: "_id", as: "model", },
+                },
+                { $unwind: "$model" },
+                {
+                    $lookup: { from: "bodyfuelmodelvarients", localField: "fuelType", foreignField: "_id", as: "fuelType", },
+                },
+                { $unwind: "$fuelType" },
+                {
+                    $lookup: { from: "bodyfuelmodelvarients", localField: "bodyType", foreignField: "_id", as: "bodyType", },
+                },
+                { $unwind: "$bodyType" },
+                {
+                    $lookup: { from: "bodyfuelmodelvarients", localField: "variant", foreignField: "_id", as: "variant", },
+                },
+                { $unwind: "$variant" },
+                {
+                    $match: {
+                        $or: [
+                            { "manufacturer.name": { $regex: req.query.search, $options: "i" }, },
+                            { "bodyType.bodyType": { $regex: req.query.search, $options: "i" }, },
+                            { "fuelType.fuelType": { $regex: req.query.search, $options: "i" }, },
+                            { "model.model": { $regex: req.query.search, $options: "i" }, },
+                            { "variant.variant": { $regex: req.query.search, $options: "i" }, },
+                        ]
+                    }
+                }
+            ]);
+            res.status(200).json({ status: 200, message: "Cars data found.", data: apiFeature, count: productsCount });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: "Internal server error while creating Product", });
+    }
+};
 // Create a new car
 exports.createCar = async (req, res) => {
     try {
