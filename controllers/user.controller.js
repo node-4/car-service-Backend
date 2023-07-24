@@ -76,7 +76,7 @@ exports.updateUser = async (req, res) => {
         user.fuel = req.body.fuel || user.fuel;
 
         const updatedUser = await user.save();
-        res.json({ message: updated, data: updatedUser });
+        res.json({ message: "user Detail updated", data: updatedUser });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
