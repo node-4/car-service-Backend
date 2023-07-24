@@ -55,7 +55,7 @@ exports.getAllCars = async (req, res) => {
         if (cars.length === 0) {
             return res.status(404).json({ message: "No cars found" });
         }
-        res.json(cars);
+        res.json({ message: "Cars data found", data: cars });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: err.message });
