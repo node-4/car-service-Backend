@@ -13,10 +13,10 @@ const storage = new CloudinaryStorage({
     },
 });
 const upload = multer({ storage: storage });
-router.post("/banners", bannerController.createBanner);
+router.post("/banners",upload.single('image'),  bannerController.createBanner);
 router.get("/banners", bannerController.getBanners);
 router.get("/banners/:id", bannerController.getBanner);
-router.put("/banners/:id", bannerController.updateBanner);
+router.put("/banners/:id",upload.single('image'),  bannerController.updateBanner);
 router.delete("/banners/:id", bannerController.deleteBanner);
 router.post("/brand", upload.single('image'), bannerController.createBrand);
 router.get("/brand", bannerController.getBrands);

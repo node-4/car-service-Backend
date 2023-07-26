@@ -4,9 +4,12 @@ const Bodyfuelmodelvarient = require("../models/bodyfuelmodelvarient");
 const { createResponse } = require("../utils/response/response");
 exports.createBanner = async (req, res) => {
     try {
+        req.body.title = req.body.title;
+        req.body.imageUrl = req.file.path;
+        req.body.linkUrl = req.body.linkUrl;
         const banner = new Banner(req.body);
-        await banner.save();
-        createResponse(res, 201, "Banner created successfully", banner);
+        let newBanner = await banner.save();
+        return res.status(200).json({ message: "Banner created successfully", data: newBanner });
     } catch (error) {
         console.log(error);
         createResponse(res, 500, error.message);
@@ -16,53 +19,52 @@ exports.getBanners = async (req, res) => {
     try {
         const banners = await Banner.find();
         if (!banners.length) {
-            return createResponse(res, 404, "No banners found");
+            return res.status(404).json({ message: "No banners found", data: {} });
         }
-        createResponse(res, 200, "Banners retrieved successfully", banners);
-    } catch (error) {
-        console.log(error);
-        createResponse(res, 500, error.message);
+        return res.status(200).json({ message: "Banners retrieved successfully", data: banners });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: err.message });
     }
 };
 exports.getBanner = async (req, res) => {
     try {
         const banner = await Banner.findById(req.params.id);
         if (!banner) {
-            createResponse(res, 404, "Banner not found");
-            return;
+            return res.status(404).json({ message: "No banners found", data: {} });
         }
-        createResponse(res, 200, "Banner retrieved successfully", banner);
-    } catch (error) {
-        console.log(error);
-        createResponse(res, 500, error.message);
+        return res.status(200).json({ message: "Banners retrieved successfully", data: banner });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: err.message });
     }
 };
 exports.updateBanner = async (req, res) => {
     try {
-        const banner = await Banner.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-        });
+        const banner = await Banner.findById(req.params.id);
         if (!banner) {
-            createResponse(res, 404, "Banner not found");
-            return;
+            return res.status(404).json({ message: "No banners found", data: {} });
         }
-        createResponse(res, 200, "Banner updated successfully", banner);
-    } catch (error) {
-        console.log(error);
-        createResponse(res, 500, error.message);
+        req.body.title = req.body.title || banner.title;
+        req.body.imageUrl = req.file.path || banner.imageUrl;
+        req.body.linkUrl = req.body.linkUrl || banner.linkUrl;
+        const banners = await Banner.findByIdAndUpdate(banner._id, req.body, { new: true, });
+        return res.status(200).json({ message: "Banner updated successfully", data: banners });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: err.message });
     }
 };
 exports.deleteBanner = async (req, res) => {
     try {
         const banner = await Banner.findByIdAndDelete(req.params.id);
         if (!banner) {
-            createResponse(res, 404, "Banner not found");
-            return;
+            return res.status(404).json({ message: "No banners found", data: {} });
         }
-        createResponse(res, 200, "Banner deleted successfully");
-    } catch (error) {
-        console.log(error);
-        createResponse(res, 500, error.message);
+        return res.status(200).json({ message: "Banner deleted successfully", data: {} });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: err.message });
     }
 };
 exports.createBrand = async (req, res) => {
@@ -285,7 +287,7 @@ exports.editBodyType = async (req, res) => {
         return res.status(400).json({ message: err.message });
     }
 };
-exports.editFuelType  = async (req, res) => {
+exports.editFuelType = async (req, res) => {
     try {
         const { fuelType } = req.body;
         const findFuelType = await Bodyfuelmodelvarient.findOne({ _id: req.params.id, type: "FUELTYPE" });
