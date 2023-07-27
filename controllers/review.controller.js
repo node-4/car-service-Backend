@@ -1,4 +1,6 @@
 const Review = require("../models/review.model");
+const CarDb = require("../models/car.model");
+
 const { getCarById } = require("../services/car-services");
 const { getAllReviews } = require("../services/review-service");
 // Get all reviews
@@ -54,6 +56,10 @@ exports.createReview = async (req, res) => {
             date,
             review,
         });
+        const checkCarId = await CarDb.findById({ _id: carId })
+        if (!checkCarId) {
+            return res.status(404).json({ msg: "CarId not found" });
+        }
         const updatedReview = await newReview.save();
         const reviews = await getAllReviews(carId);
         const car = await getCarById(carId);
