@@ -1,4 +1,5 @@
 const Payment = require("../models/payment");
+const User = require("../models/user.model");
 const { createResponse } = require("../utils/response/response");
 const Razorpay = require("razorpay");
 const uuid = require("uuid");
@@ -12,7 +13,10 @@ const Order = require("../models/car-service-order");
 exports.createPayment = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
-        console.log(order);
+        console.log("order", order);
+        if (!order) {
+            return res.status(400).json({ status: 400, message: "No data found with this orderId" });
+        }
         const data = {
             amount: order.amount * 100,
             currency: "INR",

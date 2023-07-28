@@ -32,6 +32,8 @@ router.post("/cars",
 
 carController.createCar);
 router.post("/admin/cars", [authJwt.verifyToken], carController.createCar);
+router.post('/getSimilarCars', carController.getSimilarCars);
+
 // Get a specific car
 router.get("/cars/:id", carController.getCar);
 router.get("/recommendedcars", carController.getRecommendedCars);
@@ -60,4 +62,10 @@ router.delete(
 );
 
 router.get("/compare-cars", carController.compareCars);
+
+router.get('/carsByYear/:year', carController.getCarsByYear);
+router.get('/fuelTypes/:carId', carController.getFuelTypes);
+router.get('/kmDrivenValues/:carId', carController.getKmDrivenValues);
+
+
 module.exports = router;

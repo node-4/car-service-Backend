@@ -1,4 +1,6 @@
 const Car = require("../models/car.model");
+const Brand = require('../models/brand');
+const bodyFuelModelTypeVarientDb = require('../models/bodyfuelmodelvarient');
 const { uploadImage } = require("../services/uploadImage");
 exports.allCarsget = async (req, res) => {
     try {
@@ -164,7 +166,34 @@ exports.getCar = async (req, res) => {
         if (car === null) {
             return res.status(404).json({ message: "Car not found" });
         }
-        res.status(200).json({ data: car });
+        const checkBrand = car.manufacturer
+        const verifyManufacturer = await Brand.findById({ _id: checkBrand })
+        if (!verifyManufacturer) {
+            return res.status(404).json({ message: "Brand not found" });
+        }
+        const checkModel = car.model
+        const verifyModel = await bodyFuelModelTypeVarientDb.findById({ _id: checkModel })
+        if (!verifyModel) {
+            return res.status(404).json({ message: "Model not found" });
+        }
+        const checkFuelType = car.fuelType
+        const verifyFuelType = await bodyFuelModelTypeVarientDb.findById({ _id: checkFuelType })
+        if (!verifyFuelType) {
+            return res.status(404).json({ message: "fuelType not found" });
+        }
+        const checkBodyType = car.bodyType
+        const verifyBodyType = await bodyFuelModelTypeVarientDb.findById({ _id: checkBodyType })
+        if (!verifyBodyType) {
+            return res.status(404).json({ message: "BodyType not found" });
+        }
+        const checkVariant = car.variant
+        const verifyVariant = await bodyFuelModelTypeVarientDb.findById({ _id: checkVariant })
+        if (!verifyVariant) {
+            return res.status(404).json({ message: "Variant not found" });
+        }
+        console.log("verifyVariant", verifyVariant)
+
+        res.status(200).json({ data: car, verifyManufacturer, verifyModel, verifyFuelType, verifyBodyType, verifyVariant });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: err.message });
@@ -216,21 +245,19 @@ exports.getRecommendedCars = async (req, res) => {
     }
 };
 
+
 exports.compareCars = async (req, res) => {
     try {
         const { carId1, carId2 } = req.query;
 
         const car1 = await Car.findById(carId1);
-        console.log(car1);
         if (!car1)
-            return res.status(404)({
+            return res.status(404).json({
                 message: `Car with ID ${carId1} not found`,
             });
-
         const car2 = await Car.findById(carId2);
-        console.log(car1);
         if (!car2)
-            return res.status(404)({
+            return res.status(404).json({
                 message: `Car with ID ${carId2} not found`,
             });
 
@@ -240,6 +267,7 @@ exports.compareCars = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
 const mongoose = require("mongoose");
 exports.compareCars1 = async (req, res) => {
     try {
@@ -396,6 +424,7 @@ exports.compareCars1 = async (req, res) => {
     }
 };
 const { ObjectId } = require("mongodb");
+const { findById } = require("../models/car-spare-parts.model");
 
 // exports.compareCars = async (req, res) => {
 //     try {
@@ -451,3 +480,82 @@ const { ObjectId } = require("mongodb");
 function compareTwoCars(car1, car2) {
     // A function to handle the comparison of two cars.
 }
+
+// me
+
+exports.getSimilarCars = async (req, res) => {
+    try {
+        const { manufacturer, model, bodyType, price } = req.body;
+        const similarityCriteria = {
+            // manufacturer,
+            // model,
+            bodyType,
+            // price: { $gt: price - 1000, $lt: price + 1000 },
+        };
+        const similarCars = await Car.find(similarityCriteria).limit(10);
+
+        res.status(200).json({ message: "Similar cars found", data: similarCars });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+exports.getCarsByYear = async (req, res) => {
+    try {
+        const year = req.params.year;
+        const cars = await Car.find({ year: year });
+        if (cars.length === 0) {
+            return res.status(400).json({ status: 400, message: "No data found" });
+        }
+
+        res.status(200).json({ message: "Cars found", data: cars });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+
+exports.getFuelTypes = async (req, res) => {
+    try {
+        const carId = req.params.carId;
+        const car = await Car.findById(carId);
+
+        if (!car) {
+            return res.status(404).json({ status: 404, message: "Car not found" });
+        }
+        const fuelTypes = await Car.distinct('fuelType', { _id: carId });
+        const verifiedFuelTypes = await bodyFuelModelTypeVarientDb.find({ _id: { $in: fuelTypes } });
+
+        if (!verifiedFuelTypes) {
+            return res.status(400).json({ status: 400, message: "No data found" });
+        }
+
+        res.status(200).json({ message: "Fuel types found", data: verifiedFuelTypes });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+
+exports.getKmDrivenValues = async (req, res) => {
+    try {
+        const carId = req.params.carId;
+        const car = await Car.findById(carId);
+
+        if (!car) {
+            return res.status(404).json({ message: "Car not found" });
+        }
+        const kmDrivenValue = car.kmDriven;
+
+        res.status(200).json({ message: "Kilometer driven value found", data: kmDrivenValue });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
