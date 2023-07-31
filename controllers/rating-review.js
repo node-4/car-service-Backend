@@ -18,7 +18,11 @@ exports.getReviewsbyUser = async (req, res) => {
     try {
         const userId = req.params.userId;
         const reviews = await Review.find({ userId });
-        res.json(reviews);
+        res.json({
+            status: 200,
+            message: "User review get successfully",
+            data: reviews
+        });
     } catch (error) {
         console.log(err);
         createResponse(res, 500, err.message);
