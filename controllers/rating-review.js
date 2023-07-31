@@ -14,16 +14,27 @@ exports.getReviews = async (req, res) => {
     }
 };
 
-exports.getReview = async (req, res) => {
+exports.getReviewsbyUser = async (req, res) => {
     try {
-        const review = await Review.findById(req.params.id);
-        if (!review) {
-            return createResponse(res, 404, "Review not found");
-        }
-        createResponse(res, 200, "Review retrieved successfully", review);
-    } catch (err) {
+        const userId = req.params.userId;
+        const reviews = await Review.find({ userId });
+        res.json(reviews);
+    } catch (error) {
         console.log(err);
         createResponse(res, 500, err.message);
+    }
+};
+
+exports.getReviewById = async (req, res) => {
+    try {
+      const review = await Review.findById(req.params.id);
+      if (!review) {
+        return createResponse(res, 404, "Review not found");
+      }
+      createResponse(res, 200, "Review Get successfully", review);
+    } catch (err) {
+      console.log(err);
+      createResponse(res, 400, err.message);
     }
 };
 
@@ -72,4 +83,21 @@ exports.deleteReview = async (req, res) => {
         console.log(err);
         createResponse(res, 500, err.message);
     }
+};
+
+exports.createfeedback = async (req, res) => {
+  try {
+    const { content } = req.body;
+
+    if (content) {
+      return createResponse(res, 400, "content are required");
+    }
+
+    const reviewResult = new Review({content });
+    await reviewResult.save();
+    createResponse(res, 201, "Feedback created successfully", reviewResult);
+  } catch (err) {
+    console.log(err);
+    createResponse(res, 400, err.message);
+  }
 };
