@@ -14,16 +14,15 @@ const getfeedback = async (req, res) => {
   }
 };
 
-const
-  getfeedbackbyUser = async (req, res) => {
-  const userId = req.params.id
-  console.log(userId)
-  const feedback = await Feedback.findById(userId);
-  if (!feedback) {
-    res.status(404).json({ message: "Feedback not found" });
-  } else {
-    res.status(200).json(feedback);
-  }
+const getfeedbackbyUser = async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const feedback = await Feedback.find({ userId });
+      res.json(feedback);
+    } catch (error) {
+      console.log(error);
+      res.json({ message: error.message });
+    }
 }
 
 const createFeedback = async (req, res) => {
