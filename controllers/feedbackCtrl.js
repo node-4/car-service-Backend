@@ -1,8 +1,18 @@
 const Feedback = require('../models/feedbackModel');
 
 const getAllfeedback = async (req, res) => {
-  const feedbacks = await Feedback.find();
-  res.status(200).json(feedbacks);
+  try {
+    const feedbacks = await Feedback.find();
+    res.status(200).json({
+      status: 200,
+      message: "All feedbacks",
+      data: feedbacks,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error.message });
+  }
+
 };
 
 const getfeedback = async (req, res) => {
@@ -15,14 +25,18 @@ const getfeedback = async (req, res) => {
 };
 
 const getfeedbackbyUser = async (req, res) => {
-    try {
-      const userId = req.params.userId;
-      const feedback = await Feedback.find({ userId });
-      res.json(feedback);
-    } catch (error) {
-      console.log(error);
-      res.json({ message: error.message });
-    }
+  try {
+    const userId = req.params.userId;
+    const feedback = await Feedback.find({ userId });
+    res.json({
+      status: 200,
+      message: "user feedback",
+      data: feedback
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error.message });
+  }
 }
 
 const createFeedback = async (req, res) => {
@@ -33,7 +47,10 @@ const createFeedback = async (req, res) => {
 
   try {
     await feedback.save();
-    res.status(201).json({ message: "Feedback created" });
+    res.status(201).json({
+      message: "Feedback created",
+      data: feedback
+    });
   } catch (error) {
     res.status(500).json({ error: error });
   }
