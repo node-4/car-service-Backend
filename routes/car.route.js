@@ -28,8 +28,6 @@ router.post("/cars",
 // [authJwt.verifyToken, 
     upload.single("file"),
 // ],
-
-
 carController.createCar);
 router.post("/admin/cars", [authJwt.verifyToken], carController.createCar);
 router.post('/getSimilarCars', carController.getSimilarCars);

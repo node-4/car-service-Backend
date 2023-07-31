@@ -261,7 +261,9 @@ exports.compareCars = async (req, res) => {
                 message: `Car with ID ${carId2} not found`,
             });
 
-        res.status(200).json({ data: [car1, car2] });
+        res.status(200).json({
+            data: [{car1:car1, car2:car2}],
+        });
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ error: err.message });
