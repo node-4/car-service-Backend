@@ -84,20 +84,3 @@ exports.deleteReview = async (req, res) => {
         createResponse(res, 500, err.message);
     }
 };
-
-exports.createfeedback = async (req, res) => {
-  try {
-    const { content } = req.body;
-
-    if (content) {
-      return createResponse(res, 400, "content are required");
-    }
-
-    const reviewResult = new Review({content });
-    await reviewResult.save();
-    createResponse(res, 201, "Feedback created successfully", reviewResult);
-  } catch (err) {
-    console.log(err);
-    createResponse(res, 400, err.message);
-  }
-};
