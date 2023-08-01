@@ -389,10 +389,7 @@ exports.getRecommendedCars = async (req, res) => {
 
 exports.compareCars = async (req, res) => {
  try {
-   // Get the car IDs from the request query
    const { carId1, carId2 } = req.query;
-
-   // Fetch the details of both cars from the database
      const car1 = await Car.findById(carId1)
        .populate("manufacturer")
        .populate("model")
@@ -400,8 +397,7 @@ exports.compareCars = async (req, res) => {
        .populate("bodyType")
        .populate("variant")
        .exec();
-     console.log(car1)
-     
+
      const car2 = await Car.findById(carId2)
        .populate("manufacturer")
        .populate("model")
@@ -409,26 +405,22 @@ exports.compareCars = async (req, res) => {
        .populate("bodyType")
        .populate("variant")
        .exec();
-     console.log(car2)
-     
-   // Check if the cars exist in the database
+
+
    if (!car1 || !car2) {
      return res.status(404).json({ message: "One or both cars not found" });
    }
 
-   // Perform any comparison logic you need here...
-
-   // For example, you can compare prices of the two cars
    const priceComparison =
      car1.price > car2.price
        ? "Car 1 is more expensive"
        : "Car 2 is more expensive";
      const data = { car1: car1, car2:car2 };
-   // Return the comparison data as a JSON response
+
      return res.json({
          data:[data],
          priceComparison,
-     // Add more comparison data here as needed...
+
    });
  } catch (err) {
    console.error(err);
@@ -649,10 +641,10 @@ exports.getSimilarCars = async (req, res) => {
   try {
     const { manufacturer, model, bodyType, price } = req.body;
     const similarityCriteria = {
-      // manufacturer,
-      // model,
+      manufacturer,
+      model,
       bodyType,
-      // price: { $gt: price - 1000, $lt: price + 1000 },
+      price: { $gt: price - 1000, $lt: price + 1000 },
     };
     const similarCars = await Car.find(similarityCriteria).limit(10);
 

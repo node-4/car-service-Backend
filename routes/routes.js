@@ -24,4 +24,5 @@ router.use("/", require("./support"));
 router.use("/", require("./discount"));
 router.use("/", require("./payment"));
 router.use("/", require("./feedback.route"));
+router.use("/", require("./CarComparisonRoute"));
 module.exports = router;

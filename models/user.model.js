@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+const carComparisonModel = require("../models/CarComparisonModel");
+const Car = require("../models/car.model");
 const userSchema = new mongoose.Schema(
     {
         fullName: {
@@ -29,7 +30,7 @@ const userSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("User", userSchema);
+
 
 userSchema.pre("save", function (next) {
     if (!this.fullName || !this.mobile) {
@@ -38,3 +39,44 @@ userSchema.pre("save", function (next) {
     }
     next();
 });
+
+
+userSchema.methods.compareCars = async function (car1Id, car2Id) {
+  try {
+    const car1 = await Car.findById(car1Id)
+      .populate("manufacturer")
+      .populate("model")
+      .populate("fuelType")
+      .populate("bodyType")
+      .populate("variant")
+      .exec();
+
+    const car2 = await Car.findById(car2Id)
+      .populate("manufacturer")
+      .populate("model")
+      .populate("fuelType")
+      .populate("bodyType")
+      .populate("variant")
+      .exec();
+
+    if (!car1 || !car2) {
+      throw new Error("One or both cars not found");
+    }
+
+    const carComparison = new carComparisonModel({
+      user: this._id,
+      car1: car1Id,
+      car2: car2Id,
+      car1Details: car1.toObject(),
+      car2Details: car2.toObject(),
+    });
+
+    await carComparison.save();
+
+    return carComparison;
+  } catch (err) {
+    throw err;
+  }
+};
+
+module.exports = mongoose.model("User", userSchema);
