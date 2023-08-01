@@ -54,7 +54,7 @@ const compareCarsByUser = async (req, res) => {
         .json({ message: "No comparison found for the user" });
     }
 
-    return res.json(latestComparison);
+    return res.json({data:[latestComparison]});
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Internal server error" });
