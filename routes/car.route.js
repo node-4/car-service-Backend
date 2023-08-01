@@ -20,6 +20,8 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 const { authJwt, objectId } = require("../middlewares");
 // Get all cars
+router.get("/cars/specification/:id", carController.CarSpecification);
+router.post("/cars/total-price", carController.CreateCarSpecification);
 router.get("/cars", carController.getAllCars);
 router.get("/allCarsget", carController.allCarsget);
 
