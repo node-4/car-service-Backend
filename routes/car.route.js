@@ -21,7 +21,7 @@ const upload = multer({ storage: storage });
 const { authJwt, objectId } = require("../middlewares");
 // Get all cars
 router.get("/cars/specification/:id", carController.CarSpecification);
-router.post("/cars/total-price", carController.CreateCarSpecification);
+// router.post("/cars/total-price", carController.CreateCarSpecification);
 router.get("/cars", carController.getAllCars);
 router.get("/allCarsget", carController.allCarsget);
 
@@ -37,6 +37,8 @@ router.post('/getSimilarCars', carController.getSimilarCars);
 // Get a specific car
 router.get("/cars/:id", carController.getCar);
 router.get("/recommendedcars", carController.getRecommendedCars);
+router.get("/cars-by-brand/:brandId", carController.BrandSpecification);
+
 // Update a car
 router.patch(
     "/cars/:id",

@@ -735,23 +735,42 @@ exports.CarSpecification = async (req, res) => {
   });
 };
 
-exports.CreateCarSpecification = async (req, res) => {
-  const exPrice = req.body.exPrice;
-  const rto = req.body.rto;
-  const insurance = req.body.insurance;
-  const othersCharges = req.body.othersCharges;
-  const totalPrice = exPrice + rto + insurance + othersCharges;
-  const desc = req.body.desc;
-  const car = new Car({
-    exPrice,
-    rto,
-    insurance,
-    othersCharges,
-    desc,
-  });
-  await car.save();
-  res.json({
-    totalPrice,
-    desc,
-  });
-};
+// exports.CreateCarSpecification = async (req, res) => {
+//   const exPrice = req.body.exPrice;
+//   const rto = req.body.rto;
+//   const insurance = req.body.insurance;
+//   const othersCharges = req.body.othersCharges;
+//   const totalPrice = exPrice + rto + insurance + othersCharges;
+//   const desc = req.body.desc;
+//   const car = new Car({
+//     exPrice,
+//     rto,
+//     insurance,
+//     othersCharges,
+//     desc,
+//   });
+//   await car.save();
+//   res.json({
+//     totalPrice,
+//     desc,
+//   });
+// };
+
+exports.BrandSpecification = async (req, res) => {
+    try {
+      const { brandId } = req.params;
+
+      const cars = await Car.find({ manufacturer: brandId })
+        .populate("manufacturer")
+        .populate("model")
+        .populate("fuelType")
+        .populate("bodyType")
+        .populate("variant")
+        .exec();
+
+      return res.json({Brand:cars});
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
