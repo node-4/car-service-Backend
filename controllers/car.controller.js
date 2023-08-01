@@ -246,6 +246,33 @@ exports.getRecommendedCars = async (req, res) => {
 };
 
 
+// exports.compareCars = async (req, res) => {
+//     try {
+//         const { carId1, carId2 } = req.query;
+
+//         const car1 = await Car.findById(carId1);
+//         if (!car1)
+//             return res.status(404).json({
+//                 message: `Car with ID ${carId1} not found`,
+//             });
+
+
+//         const car2 = await Car.findById(carId2);
+//         if (!car2)
+//             return res.status(404).json({
+//                 message: `Car with ID ${carId2} not found`,
+//             });
+
+
+//         res.status(200).json({
+//             data: [{ car1: car1, car2: car2 }],
+//         });
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).json({ error: err.message });
+//     }
+// };
+
 exports.compareCars = async (req, res) => {
     try {
         const { carId1, carId2 } = req.query;
@@ -255,15 +282,96 @@ exports.compareCars = async (req, res) => {
             return res.status(404).json({
                 message: `Car with ID ${carId1} not found`,
             });
+
+        const {
+            manufacturer,
+            model,
+            fuelType,
+            bodyType,
+            variant,
+        } = car1;
+
+        const checkManufacturer = await Brand.findById({
+            _id: manufacturer,
+        });
+        if (!checkManufacturer) {
+            return res.status(404).json({ message: "Brand not found" });
+        }
+
+        const checkModel = await bodyFuelModelTypeVarientDb.findById({
+            _id: model,
+        });
+        if (!checkModel) {
+            return res.status(404).json({ message: "Model not found" });
+        }
+
+        const checkFuelType = await bodyFuelModelTypeVarientDb.findById({
+            _id: fuelType,
+        });
+        if (!checkFuelType) {
+            return res
+                .status(404)
+                .json({ message: "fuelType not found" });
+        }
+
+        const checkBodyType = await bodyFuelModelTypeVarientDb.findById({
+            _id: bodyType,
+        });
+        if (!checkBodyType) {
+            return res
+                .status(404)
+                .json({ message: "BodyType not found" });
+        }
+
+        const checkVariant = await bodyFuelModelTypeVarientDb.findById(
+            { _id: variant }
+        );
+        if (!checkVariant) {
+            return res.status(404).json({ message: "Variant not found" });
+        }
+
         const car2 = await Car.findById(carId2);
         if (!car2)
             return res.status(404).json({
                 message: `Car with ID ${carId2} not found`,
             });
 
-        res.status(200).json({
-            data: [{car1:car1, car2:car2}],
-        });
+        const {
+            manufacturer: manufacturer2,
+            model: model2,
+            fuelType: fuelType2,
+            bodyType: bodyType2,
+            variant: variant2,
+        } = car2;
+
+        const response = {
+            car1: {
+                manufacturer,
+                model,
+                fuelType,
+                bodyType,
+                variant,
+                verifyManufacturer: checkManufacturer,
+                verifyModel: checkModel,
+                verifyFuelType: checkFuelType,
+                verifyBodyType: checkBodyType,
+                verifyVariant: checkVariant,
+            },
+            car2: {
+                manufacturer: manufacturer2,
+                model: model2,
+                fuelType: fuelType2,
+                bodyType: bodyType2,
+                variant: variant2,
+                verifyManufacturer: checkManufacturer,
+                verifyModel: checkModel,
+                verifyFuelType: checkFuelType,
+                verifyBodyType: checkBodyType,
+                verifyVariant: checkVariant,
+            },
+        };
+
+        res.status(200).json({ data: response });
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ error: err.message });
