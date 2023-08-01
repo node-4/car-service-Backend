@@ -346,6 +346,7 @@ exports.compareCars = async (req, res) => {
 
         const response = {
             car1: {
+                car1,
                 manufacturer,
                 model,
                 fuelType,
@@ -358,6 +359,7 @@ exports.compareCars = async (req, res) => {
                 verifyVariant: checkVariant,
             },
             car2: {
+                car2,
                 manufacturer: manufacturer2,
                 model: model2,
                 fuelType: fuelType2,
