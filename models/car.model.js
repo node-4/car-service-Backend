@@ -31,6 +31,7 @@ const carSchema = new mongoose.Schema(
     },
     carStatus: {
       type: String,
+      enum: ["New", "Old"],
     },
     color: {
       type: String,
