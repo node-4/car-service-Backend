@@ -40,7 +40,7 @@ const getUsedCar = async (req, res) => {
     if (!oldCar) {
       return res.status(404).json({ error: "Old car details not found" });
     }
-    res.status(200).json({ usedCar });
+    res.status(200).json({ data:[usedCar] });
   } catch (error) {
     res.status(500).json({ error: "Failed to get the used car" });
   }
