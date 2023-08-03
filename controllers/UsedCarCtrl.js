@@ -86,18 +86,20 @@ const deleteUsedCar = async (req, res) => {
 
 const getOldCars = async (req, res) => {
   try {
-    const { planningToBuy, kmsDriven, carFor, city, runningAvgDaily } = req.body;
+    const usedCarData = req.body;
+    const savedUsedCar = await UsedCar.create(usedCarData);
+    const { kmsDriven, runningAvgDaily } = usedCarData;
 
+    // Find old cars based on kmsDriven and runningAvgDaily
     const oldCars = await Car.find({
       carStatus: "Old",
-      city: city,
-      mileage: { $lte: kmsDriven * 1.1, $gte: kmsDriven * 0.9 },
+      kmDriven: { $lte: kmsDriven },
+      runningAvgDaily: { $gte: runningAvgDaily },
     });
-console.log(oldCars);
-    return res.json({ data: oldCars });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Internal server error" });
+
+    res.status(201).json({ savedUsedCar, oldCars });
+  } catch (error) {
+    res.status(500).json({ error: "Could not save used car data." });
   }
 };
 
