@@ -72,7 +72,8 @@ const updateAccessory = async (req, res) => {
 // CREATE a new accessory
 const createAccessory = async (req, res) => {
     try {
-        const { name, price, description, images } = req.body;
+        const { name, price, description} = req.body;
+        const images = req.file.path;
         const accessory = new Accessories({ name, price, description, images });
         const newAccessory = await accessory.save();
         createResponse(
