@@ -1,4 +1,5 @@
 const UsedCar = require("../models/UsedCar");
+const Car = require("../models/car.model")
 
 const createUsedCar = async (req, res) => {
   try {
@@ -83,10 +84,29 @@ const deleteUsedCar = async (req, res) => {
   }
 };
 
+const getOldCars = async (req, res) => {
+  try {
+    const { planningToBuy, kmsDriven, carFor, city, runningAvgDaily } = req.body;
+
+    const oldCars = await Car.find({
+      carStatus: "Old",
+      city: city,
+      mileage: { $lte: kmsDriven * 1.1, $gte: kmsDriven * 0.9 },
+    });
+console.log(oldCars);
+    return res.json({ data: oldCars });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 module.exports = {
   createUsedCar,
   getUsedCar,
   getAllUsedCar,
   updateUsedCar,
   deleteUsedCar,
+  getOldCars,
 };
