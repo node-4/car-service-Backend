@@ -15,15 +15,16 @@ const createUsedCar = async (req, res) => {
 
 const getOldCars = async (req, res) => {
   try {
-    const { kmsDriven, runningAvgDaily } = req.query;
+    const { kmsDriven, runningAvgDaily, state } = req.query;
     const oldCars = await Car.find({
       carStatus: "Old",
       $or: [
         { kmsDriven: { $lte: kmsDriven } },
         { mileage: { $gte: runningAvgDaily } },
+        { state: { state } },
       ],
     });
-    res.json({data:oldCars});
+    res.json({ data: oldCars });
   } catch (error) {
     res.status(500).json({ error: "Could not fetch old cars." });
   }

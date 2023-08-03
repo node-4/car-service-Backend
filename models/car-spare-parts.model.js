@@ -4,14 +4,14 @@ const carSparePartSchema = new Schema(
     {
         name: {
             type: String,
-            required: true,
+            // required: true,
         },
         description: {
             type: String,
         },
         price: {
             type: String,
-            required: true,
+            // required: true,
         },
         discountedPrice: {
             type: String,
@@ -23,7 +23,7 @@ const carSparePartSchema = new Schema(
 
         image: {
             type: String,
-            required: true,
+            // required: true,
         },
         car: {
             type: String,

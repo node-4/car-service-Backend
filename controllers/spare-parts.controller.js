@@ -4,7 +4,10 @@ const mongoose = require("mongoose");
 
 exports.createCarSparePart = async (req, res) => {
     try {
-        const { name, price, description, car, userId, image } = req.body;
+        const { name, price, description, car, userId } = req.body;
+
+        const image = req.file.path;
+
         const discountPercentage = req.body.discountPercentage
             ? req.body.discountPercentage
             : 0;
