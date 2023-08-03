@@ -1,5 +1,4 @@
 const UsedCar = require("../models/UsedCar");
-const Car = require("../models/car.model");
 
 const createUsedCar = async (req, res) => {
   try {
@@ -48,7 +47,7 @@ const getUsedCar = async (req, res) => {
 
 const getAllUsedCar = async (req, res) => {
   try {
-    const usedCars = await UsedCar.find().populate("car");;
+    const usedCars = await UsedCar.find().populate("car");
     res.status(200).json({ data: usedCars });
   } catch (error) {
     res.status(500).json({ error: "Failed to get used cars" });

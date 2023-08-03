@@ -57,14 +57,8 @@ router.delete(
 );
 
 // Delete a car
-router.delete(
-    "/cars/:id",
-    [authJwt.verifyToken, objectId.validId],
-    carController.deleteCar
-);
-
+router.delete("/cars/:id",[authJwt.verifyToken, objectId.validId],carController.deleteCar);
 router.get("/compare-cars", carController.compareCars);
-
 router.get('/carsByYear/:year', carController.getCarsByYear);
 router.get('/fuelTypes/:carId', carController.getFuelTypes);
 router.get('/kmDrivenValues/:carId', carController.getKmDrivenValues);

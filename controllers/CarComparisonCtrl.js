@@ -31,7 +31,7 @@ const compareCarsByUser = async (req, res) => {
   }
 };
 
-// router.get("/latest-comparison/:userId",
+
   const getComparison = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -42,7 +42,7 @@ const compareCarsByUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const latestComparison = await CarComparison.findOne({ user: userId })
+    const latestComparison = await CarComparison.find({ user: userId })
       .sort({ createdAt: -1 })
       .populate("car1Details.car")
       .populate("car2Details.car")

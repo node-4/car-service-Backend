@@ -6,10 +6,6 @@ const usedCarSchema = new mongoose.Schema({
       ref: "Car",
       required: true,
     },
-    // userId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    // },
     planningToBuy: {
       type: String,
       enum: [
