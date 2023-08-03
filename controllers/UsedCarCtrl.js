@@ -1,60 +1,60 @@
 const UsedCar = require("../models/UsedCar");
-const Car = require("../models/car.model")
+const Car = require("../models/car.model");
 
 const createUsedCar = async (req, res) => {
   try {
-    const existingCar = await UsedCar.findOne({
-      userId: req.body.userId,
-      carId: req.body.carId,
-      planningToBuy: req.body.planningToBuy,
-      kmsDriven: req.body.kmsDriven,
-      carFor: req.body.carFor,
-      city: req.body.city,
-      runningAvgDaily: req.body.runningAvgDaily,
-    });
-
-    if (existingCar) {
-      return res.status(409).json({ error: "Car already created" });
-    }
-
     const newUsedCar = await UsedCar.create(req.body);
     res.status(201).json({
       message: "Used Car Created Successfully",
-      UsedCar: newUsedCar
+      UsedCar: newUsedCar,
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to create the used car" });
   }
-}
+};
 
-
-const getUsedCar = async (req, res) => {
-  const UsedCarId = req.params.id;
-  console.log(UsedCarId);
+const getOldCars = async (req, res) => {
   try {
-    const usedCar = await UsedCar.findById(UsedCarId).populate("car");
-    if (!usedCar) {
-      return res.status(404).json({ error: "Used car not found" });
-    }
-    const oldCar = usedCar.car;
-    if (!oldCar) {
-      return res.status(404).json({ error: "Old car details not found" });
-    }
-    res.status(200).json({ data:[usedCar] });
+    const { kmsDriven, runningAvgDaily } = req.query;
+    const oldCars = await Car.find({
+      carStatus: "Old",
+      $or: [
+        { kmsDriven: { $lte: kmsDriven } },
+        { mileage: { $gte: runningAvgDaily } },
+      ],
+    });
+    res.json({data:oldCars});
   } catch (error) {
-    res.status(500).json({ error: "Failed to get the used car" });
+    res.status(500).json({ error: "Could not fetch old cars." });
   }
 };
 
+// const getUsedCar = async (req, res) => {
+//   const UsedCarId = req.params.id;
+//   console.log(UsedCarId);
+//   try {
+//     const usedCar = await UsedCar.findById(UsedCarId).populate("car");
+//     if (!usedCar) {
+//       return res.status(404).json({ error: "Used car not found" });
+//     }
+//     const oldCar = usedCar.car;
+//     if (!oldCar) {
+//       return res.status(404).json({ error: "Old car details not found" });
+//     }
+//     res.status(200).json({ data:[usedCar] });
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to get the used car" });
+//   }
+// };
+
 const getAllUsedCar = async (req, res) => {
   try {
-    const usedCars = await UsedCar.find().populate("car");
+    const usedCars = await UsedCar.find().populate("Car");
     res.status(200).json({ data: usedCars });
   } catch (error) {
     res.status(500).json({ error: "Failed to get used cars" });
   }
-}
-
+};
 
 const updateUsedCar = async (req, res) => {
   try {
@@ -70,7 +70,7 @@ const updateUsedCar = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to update the used car" });
   }
-}
+};
 
 const deleteUsedCar = async (req, res) => {
   try {
@@ -84,29 +84,9 @@ const deleteUsedCar = async (req, res) => {
   }
 };
 
-const getOldCars = async (req, res) => {
-  try {
-    const usedCarData = req.body;
-    const savedUsedCar = await UsedCar.create(usedCarData);
-    const { kmsDriven, runningAvgDaily } = usedCarData;
-
-    // Find old cars based on kmsDriven and runningAvgDaily
-    const oldCars = await Car.find({
-      carStatus: "Old",
-      kmDriven: { $lte: kmsDriven },
-      runningAvgDaily: { $gte: runningAvgDaily },
-    });
-
-    res.status(201).json({ savedUsedCar, oldCars });
-  } catch (error) {
-    res.status(500).json({ error: "Could not save used car data." });
-  }
-};
-
-
 module.exports = {
   createUsedCar,
-  getUsedCar,
+  // getUsedCar,
   getAllUsedCar,
   updateUsedCar,
   deleteUsedCar,

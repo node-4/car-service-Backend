@@ -1,7 +1,7 @@
 const express = require("express");
 const {
   createUsedCar,
-  getUsedCar,
+  // getUsedCar,
   getAllUsedCar,
   updateUsedCar,
   deleteUsedCar,
@@ -10,8 +10,8 @@ const {
 const router = express.Router();
 
 router.post("/create/usedcar", createUsedCar);
-router.get("/usedcar/:id", getUsedCar);
-router.post("/usedcar/old", getOldCars);
+// router.get("/usedcar/:id", getUsedCar);
+router.get("/usedcar/old", getOldCars);
 router.get("/usedcar", getAllUsedCar);
 router.put("/usedcar/update/:id", updateUsedCar);
 router.delete("/usedcar/:id", deleteUsedCar);
