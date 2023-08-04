@@ -23,6 +23,7 @@ const { authJwt, objectId } = require("../middlewares");
 router.get("/cars/specification/:id", carController.CarSpecification);
 // router.post("/cars/total-price", carController.CreateCarSpecification);
 router.get("/cars", carController.getAllCars);
+router.get("/cars/query", carController.getCarsByQuery);
 router.get("/allCarsget", carController.allCarsget);
 
 // Create a new car

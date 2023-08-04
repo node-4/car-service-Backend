@@ -259,6 +259,39 @@ exports.createCar = async (req, res) => {
   }
 };
 
+// router.get("/",
+exports.getCarsByQuery = async (req, res) => {
+  const { model, fuelType, bodyType, year, carStatus } = req.query;
+  try {
+    let query = { carStatus: { $in: ["Old", "New"] } };
+
+    if (model) {
+       query.model = { $in: [model] };
+    }
+
+    if (fuelType) {
+      query.fuelType = { $in: [fuelType] };
+    }
+
+    if (bodyType) {
+      query.bodyType = { $in: [bodyType] };
+    }
+
+    if (year) {
+      query.year = { $gte: year };
+    }
+
+    const cars = await Car.find(query)
+      .populate("model", "model") 
+      .populate("fuelType", "fuelType")
+      .populate("bodyType", "bodyType");
+
+    res.json({ data: cars });
+  } catch (error) {
+    res.status(500).json({ error: "Could not fetch cars." });
+  }
+};
+
 // Get a specific car
 exports.getCar = async (req, res) => {
   try {
@@ -388,44 +421,44 @@ exports.getRecommendedCars = async (req, res) => {
 // };
 
 exports.compareCars = async (req, res) => {
- try {
-   const { carId1, carId2 } = req.query;
-     const car1 = await Car.findById(carId1)
-       .populate("manufacturer")
-       .populate("model")
-       .populate("fuelType")
-       .populate("bodyType")
-       .populate("variant")
-       .exec();
+  try {
+    const { carId1, carId2 } = req.query;
+    const car1 = await Car.findById(carId1)
+      .populate("manufacturer")
+      .populate("model")
+      .populate("fuelType")
+      .populate("bodyType")
+      .populate("variant")
+      .exec();
 
-     const car2 = await Car.findById(carId2)
-       .populate("manufacturer")
-       .populate("model")
-       .populate("fuelType")
-       .populate("bodyType")
-       .populate("variant")
-       .exec();
+    const car2 = await Car.findById(carId2)
+      .populate("manufacturer")
+      .populate("model")
+      .populate("fuelType")
+      .populate("bodyType")
+      .populate("variant")
+      .exec();
 
 
-   if (!car1 || !car2) {
-     return res.status(404).json({ message: "One or both cars not found" });
-   }
+    if (!car1 || !car2) {
+      return res.status(404).json({ message: "One or both cars not found" });
+    }
 
-   const priceComparison =
-     car1.price > car2.price
-       ? "Car 1 is more expensive"
-       : "Car 2 is more expensive";
-     const data = { car1: car1, car2:car2 };
+    const priceComparison =
+      car1.price > car2.price
+        ? "Car 1 is more expensive"
+        : "Car 2 is more expensive";
+    const data = { car1: car1, car2: car2 };
 
-     return res.json({
-         data:[data],
-         priceComparison,
+    return res.json({
+      data: [data],
+      priceComparison,
 
-   });
- } catch (err) {
-   console.error(err);
-   return res.status(500).json({ message: "Internal server error" });
- }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 
@@ -699,20 +732,20 @@ exports.CarSpecification = async (req, res) => {
 // };
 
 exports.BrandSpecification = async (req, res) => {
-    try {
-      const { brandId } = req.params;
+  try {
+    const { brandId } = req.params;
 
-      const cars = await Car.find({ manufacturer: brandId })
-        .populate("manufacturer")
-        .populate("model")
-        .populate("fuelType")
-        .populate("bodyType")
-        .populate("variant")
-        .exec();
+    const cars = await Car.find({ manufacturer: brandId })
+      .populate("manufacturer")
+      .populate("model")
+      .populate("fuelType")
+      .populate("bodyType")
+      .populate("variant")
+      .exec();
 
-      return res.json({Brand:cars});
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Internal server error" });
-    }
+    return res.json({ Brand: cars });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
   }
+}
