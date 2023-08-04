@@ -13,13 +13,20 @@ const createBooking = async (req, res) => {
       date: req.body.date,
       time: req.body.time,
     });
+
+    // Check if the user has already booked the car on the same date and time
+    const existingBooking = await Booking.findOne({
+      userId,
+      carId,
+      date: appointment.date,
+      time: appointment.time,
+    });
+
+    if (existingBooking) {
+      throw new Error("User has already booked this car on this date and time");
+    }
+
     appointment.save();
-    // if (userId && carId) {
-    //   const existingBooking = await Booking.findOne({ userId, carId });
-    //   if (existingBooking) {
-    //     return res.status(403).json("Your Appointment Already Booked!");
-    //   }
-    // }
     res.status(201).json({ data: appointment });
   } catch (error) {
     res.status(500).json({ Error: error.message });
