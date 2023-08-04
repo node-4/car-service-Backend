@@ -33,7 +33,8 @@ exports.getArticle = async (req, res) => {
 // Create a new article
 exports.createArticle = async (req, res) => {
     try {
-        const { title, content, tags, image } = req.body;
+        const { title, content, tags } = req.body;
+        const image = req.file.path;
         const indiaTime = moment().tz("Asia/Kolkata");
         const date = indiaTime.format("DD:MM:YY");
         const time = indiaTime.format("hh:mm:ss");

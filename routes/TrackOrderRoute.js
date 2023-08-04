@@ -1,15 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const {
-    getArticles,
-    getArticle,
-    createArticle,
-    updateArticle,
-    deleteArticle,
-} = require("../controllers/aritcle");
-
 const multer = require("multer");
+
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const { createTrackOrder } = require("../controllers/TracKOrderCtrl");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
   cloud_name: "dbrvq9uxa",
@@ -35,10 +29,10 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 
-router.get("/articles", getArticles);
-router.get("/articles/:id", getArticle);
-router.post("/articles",upload.single("image"), createArticle);
-router.put("/articles/:id", updateArticle);
-router.delete("/articles/:id", deleteArticle);
+router.post(
+  "/track/order",
+  upload.single("image"),
+createTrackOrder
+);
 
 module.exports = router;
