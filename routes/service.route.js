@@ -9,8 +9,36 @@ const {
     getPriceWithDiscount,
 } = require("../controllers/car-service.controller");
 
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: "dbrvq9uxa",
+  api_key: "567113285751718",
+  api_secret: "rjTsz9ksqzlDtsrlOPcTs_-QtW4",
+});
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "images/services",
+    allowed_formats: [
+      "jpg",
+      "jpeg",
+      "png",
+      "PNG",
+      "xlsx",
+      "xls",
+      "pdf",
+      "PDF",
+      "avif",
+    ],
+  },
+});
+const upload = multer({ storage: storage });
+const { authJwt, objectId } = require("../middlewares");
+
 // Create a new service
-router.post("/car-services", createService);
+router.post("/car-services", upload.single("images"), createService);
 
 // Get all services
 router.get("/car-services", getAllServices);

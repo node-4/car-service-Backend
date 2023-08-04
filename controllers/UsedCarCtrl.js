@@ -15,13 +15,15 @@ const createUsedCar = async (req, res) => {
 
 const getOldCars = async (req, res) => {
   try {
-    const { kmsDriven, runningAvgDaily, state } = req.query;
+    const { kmsDriven, state, runningAvgDaily, planningToBuy } = req.query;
+
     const oldCars = await Car.find({
       carStatus: "Old",
       $or: [
         { kmsDriven: { $lte: kmsDriven } },
         { mileage: { $gte: runningAvgDaily } },
-        { state: { state } },
+        { planningToBuy: { $gte: planningToBuy } },
+        { state: state },
       ],
     });
     res.json({ data: oldCars });

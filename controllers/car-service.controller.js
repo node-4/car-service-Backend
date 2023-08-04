@@ -4,7 +4,8 @@ const { createResponse } = require("../utils/response/response");
 // Create a new service
 const createService = async (req, res) => {
     try {
-        const { vendorId, images, name, price, services } = req.body;
+        const { vendorId, name, price, services } = req.body;
+        const images = req.file.path;
         const service = new Service({
             vendorId,
             images,
@@ -12,6 +13,7 @@ const createService = async (req, res) => {
             price,
             services,
         });
+        
         await service.save();
         createResponse(res, 201, "Service created successfully", service);
     } catch (error) {
