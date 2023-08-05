@@ -51,15 +51,6 @@ exports.getAllTrackOrder = async (req, res) => {
 
 };
 
-const statusMapping = {
-  1: "New Parts Arrived",
-  2: "Installation In Progress",
-  3: "Final Inspection",
-  4: "Ready for Drop",
-  5: "Dropped",
-};
-
-
 exports.updateTrackOrder = async (req, res) => {
   try {
     const orderId = req.params.id;

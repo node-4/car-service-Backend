@@ -61,6 +61,41 @@ exports.createUser = async (req, res) => {
     }
 };
 
+exports.createMechanicUser = async (req, res) => {
+  const otp = generateOTP();
+  let otps = bcrypt.hashSync(otp, 8);
+  const user = new User({
+    fullName: req.body.fullName,
+    mobile: req.body.mobile,
+    carModel: req.body.carModel,
+    carNumber: req.body.carNumber,
+    fuel: req.body.fuel,
+    otp: otps,
+    userType: "mechanic",
+  });
+
+  try {
+    const newUser = await user.save();
+    let obj2 = {
+      _id: newUser._id,
+      fullName: req.body.fullName,
+      mobile: req.body.mobile,
+      carModel: req.body.carModel,
+      carNumber: req.body.carNumber,
+      fuel: req.body.fuel,
+      otp: otp,
+      userType: "mechanic",
+    };
+    res.status(201).json({
+      status: 200,
+      message: "Mechanic signed up successfully",
+      data: obj2,
+    });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 // Update a user by id
 exports.updateUser = async (req, res) => {
     try {

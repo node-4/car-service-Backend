@@ -6,17 +6,10 @@ const { authJwt, objectId } = require("../middlewares");
 router.get("/services", serviceController.getAllServices);
 
 // GET a service by ID
-router.get(
-    "/services/:id",
-    [objectId.validId],
-    serviceController.getServiceById
-);
+router.get("/services/:id",[objectId.validId],serviceController.getServiceById);
 
 // CREATE a new service
-router.post(
-    "/services",
-    [authJwt.verifyToken],
-    serviceController.createService
-);
+router.post("/services",[authJwt.verifyToken], serviceController.createService);
+router.post("/services/mechanic",/* [authJwt.verifyToken],  */serviceController.mechanicService);
 
 module.exports = router;

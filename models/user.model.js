@@ -2,42 +2,47 @@ const mongoose = require("mongoose");
 const carComparisonModel = require("../models/CarComparisonModel");
 const Car = require("../models/car.model");
 const userSchema = new mongoose.Schema(
-    {
-        fullName: {
-            type: String,
-            required: true,
-        },
-        mobile: {
-            type: String,
-            required: true,
-        },
-        carModel: {
-            type: String,
-            //     required: true,
-        },
-        carNumber: {
-            type: String,
-            //     required: true,
-        },
-        fuel: {
-            type: String,
-            //     required: true,
-        },
-        otp: {
-            type: String,
-        },
+  {
+    fullName: {
+      type: String,
+      // required: true,
     },
-    { timestamps: true }
+    mobile: {
+      type: String,
+      // required: true,
+    },
+    carModel: {
+      type: String,
+      //     required: true,
+    },
+    carNumber: {
+      type: String,
+      //     required: true,
+    },
+    fuel: {
+      type: String,
+      //     required: true,
+    },
+    otp: {
+      type: String,
+    },
+    userType: {
+      type: String,
+      enum: ["user", "mechanic"],
+      default: "user"
+    }
+  },
+  { timestamps: true }
 );
 
 
 
 userSchema.pre("save", function (next) {
-    if (!this.fullName || !this.mobile) {
-        const err = new Error("All fields are required.");
-        return next(err);
-    }
-    next();
+  if (!this.fullName || !this.mobile) {
+    const err = new Error("All fields are required.");
+    return next(err);
+  }
+  next();
 });
 
 

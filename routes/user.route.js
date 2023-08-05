@@ -9,10 +9,12 @@ const {
     getUserById,
     deleteUser,
     getUsers,
+    createMechanicUser,
 } = require("../controllers/user.controller");
 const { authJwt, objectId } = require("../middlewares");
 router.post("/auth/send-otp", sendOtp);
 router.post("/auth/signup", createUser);
+router.post("/auth/mechanic/signup", createMechanicUser);
 router.patch("/users/:id", [authJwt.verifyToken, objectId.validId], updateUser);
 router.get("/users/:id", [objectId.validId], getUserById);
 router.delete(

@@ -1,3 +1,4 @@
+const User = require("../models/user.model")
 const Service = require("../models/road-assistance");
 const { createResponse } = require("../utils/response/response");
 
@@ -45,3 +46,30 @@ exports.createService = async (req, res) => {
         createResponse(res, 400, error.message);
     }
 };
+
+
+exports.mechanicService = async (req, res) => {
+  const service = new Service({
+    userId: req.body.userId,
+    description: req.body.description,
+    location: req.body.location,
+    distance: req.body.distance,
+    date: req.body.date,
+    time: req.body.time,
+  });
+  try {
+    await service.save();
+    res.status(200).json({data:service, message:"Mechanic Create Successfully"})
+  } catch (error) {
+    res.status(500).json({error:error.message})
+  }
+}
+
+// exports.getMechanic = async (req, res) => {
+//   const service = await ServiceSchema.findById(req.params.id);
+//   if (!service) {
+//     res.sendStatus(404);
+//   } else {
+//     res.send(service);
+//   }
+// };
