@@ -1,30 +1,30 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const orderSchema = new Schema(
+const TrackOrderSchema = new Schema(
   {
     car: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      // required: true,
     },
     image: {
       type: String,
     },
     bookingId: {
       type: String,
-      required: true,
+      // required: true,
     },
     vendor: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      // required: true,
     },
     date: {
       type: Date,
-      required: true,
+      // required: true,
     },
     estimatedCompletion: {
       type: Date,
-      required: true,
+      // required: true,
     },
     progress: {
       type: [
@@ -38,11 +38,11 @@ const orderSchema = new Schema(
               "Ready for Drop",
               "Dropped",
             ],
-            required: true,
+            // required: true,
           },
           timestamp: {
             type: Date,
-            required: true,
+            // required: true,
           },
         },
       ],
@@ -52,6 +52,6 @@ const orderSchema = new Schema(
   { timestamps: true }
 );
 
-const Order = mongoose.model("Order", orderSchema);
+const TrackOrder = mongoose.model("TrackOrder", TrackOrderSchema);
 
-module.exports = Order;
+module.exports = TrackOrder;

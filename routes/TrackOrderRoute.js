@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const { createTrackOrder } = require("../controllers/TracKOrderCtrl");
+const { createTrackOrder, getTrackOrder, getAllTrackOrder, updateTrackOrder, deleteTrackOrder } = require("../controllers/TracKOrderCtrl");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
   cloud_name: "dbrvq9uxa",
@@ -13,7 +13,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "images/Car",
+    folder: "images/trackO",
     allowed_formats: [
       "jpg",
       "jpeg",
@@ -29,10 +29,10 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 
-router.post(
-  "/track/order",
-  upload.single("image"),
-createTrackOrder
-);
+router.post("/track/order",upload.single("image"),createTrackOrder);
+router.get("/track/order/:id", getTrackOrder);
+router.get("/track/order", getAllTrackOrder);
+router.put("/track/order/:id", updateTrackOrder);
+router.delete("/track/order/:id", deleteTrackOrder);
 
 module.exports = router;
