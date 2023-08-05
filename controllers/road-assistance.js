@@ -19,7 +19,10 @@ exports.getAllServices = async (req, res) => {
 // GET a service by ID
 exports.getServiceById = async (req, res) => {
     try {
-        const service = await Service.findById(req.params.id);
+        const service = await Service.findById(req.params.id)
+          .populate("userId")
+          .exec();
+
         if (service) {
             createResponse(res, 200, "Service retrieved successfully", service);
         } else {
@@ -57,6 +60,7 @@ exports.mechanicService = async (req, res) => {
     date: req.body.date,
     time: req.body.time,
   });
+    
   try {
     await service.save();
     res.status(200).json({data:service, message:"Mechanic Create Successfully"})
@@ -64,12 +68,3 @@ exports.mechanicService = async (req, res) => {
     res.status(500).json({error:error.message})
   }
 }
-
-// exports.getMechanic = async (req, res) => {
-//   const service = await ServiceSchema.findById(req.params.id);
-//   if (!service) {
-//     res.sendStatus(404);
-//   } else {
-//     res.send(service);
-//   }
-// };

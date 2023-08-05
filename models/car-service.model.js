@@ -29,7 +29,6 @@ const serviceSchema = new Schema(
         },
         rating: {
             type: String,
-            default: "unrated",
         },
     },
     { timestamps: true }
