@@ -25,7 +25,13 @@ const getOldCars = async (req, res) => {
         { planningToBuy: { $gte: planningToBuy } },
         { state: state },
       ],
-    });
+    })
+      .populate("manufacturer")
+      .populate("model")
+      .populate("fuelType") 
+      .populate("bodyType")
+      .populate("variant");
+
     res.json({ data: oldCars });
   } catch (error) {
     res.status(500).json({ error: "Could not fetch old cars." });
