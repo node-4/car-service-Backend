@@ -66,7 +66,6 @@ exports.getTrackOrder = async (req, res) => {
       },
     ]);
 
-    // const order = await TrackOrder.findById(id).populate("car");
     if (!findCar) {
       return res.status(404).json({ error: "Order not found" });
     }
@@ -90,21 +89,20 @@ exports.getAllTrackOrder = async (req, res) => {
 exports.updateTrackOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
-    const { status } = req.body;
-
+    const updateFields = req.body;
     const existingOrder = await TrackOrder.findById(orderId);
-
     if (!existingOrder) {
-      return res.status(404).json({ message: "Order not found" });
+      return res.status(404).json({ error: "Order not found." });
     }
+    Object.assign(existingOrder, updateFields);
 
-    existingOrder.progress.push({ status, timestamp: new Date() });
+    const updatedOrder = await existingOrder.save();
 
-    await existingOrder.save();
-
-    res.json({ message: "Order updated successfully", data: existingOrder });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.json(updatedOrder);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the order." });
   }
 };
 
