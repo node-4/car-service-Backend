@@ -1,5 +1,5 @@
 const TrackOrder = require("../models/TrackOrderModel");
-const mongoose = require("mongoose");
+
 
 exports.createTrackOrder = async (req, res) => {
   try {
@@ -30,12 +30,49 @@ exports.createTrackOrder = async (req, res) => {
 exports.getTrackOrder = async (req, res) => {
   try {
     const { id } = req.params;
+    let findCar = await TrackOrder.findById(id).populate([
+      {
+        path: "car",
+        populate: [
+          {
+            path: "manufacturer",
+            model: "brand",
+            select: "name",
+          },
+          {
+            path: "model",
+            model: "bodyfuelmodelvarient",
+            select: "model",
+          },
+          {
+            path: "fuelType",
+            model: "bodyfuelmodelvarient",
+            select: "fuelType",
+          },
+          {
+            path: "bodyType",
+            model: "bodyfuelmodelvarient",
+            select: "bodyType",
+          },
+          {
+            path: "variant",
+            model: "bodyfuelmodelvarient",
+            select: "variant",
+          },
+        ],
+      },
+      {
+        path: "vendor",
+      },
+    ]);
 
-    const order = await TrackOrder.findById(id);
-    if (!order) {
+    // const order = await TrackOrder.findById(id).populate("car");
+    if (!findCar) {
       return res.status(404).json({ error: "Order not found" });
     }
-    res.status(200).json({ message: "Order fetched successfully", data: order });
+    res
+      .status(200)
+      .json({ message: "Order fetched successfully", data: findCar });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -43,12 +80,11 @@ exports.getTrackOrder = async (req, res) => {
 
 exports.getAllTrackOrder = async (req, res) => {
   try {
-      const orders = await TrackOrder.find();
-      res.status(200).json(orders);
+    const orders = await TrackOrder.find();
+    res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-
 };
 
 exports.updateTrackOrder = async (req, res) => {
@@ -83,4 +119,3 @@ exports.deleteTrackOrder = async (req, res) => {
   await order.remove();
   res.status(200).json({ message: "Order deleted" });
 };
-

@@ -5,26 +5,26 @@ const TrackOrderSchema = new Schema(
   {
     car: {
       type: mongoose.Schema.Types.ObjectId,
-      // required: true,
+      ref: "Car",
     },
     image: {
       type: String,
     },
     bookingId: {
       type: String,
-      // required: true,
     },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,
-      // required: true,
+      ref: "Vendor",
     },
     date: {
       type: Date,
-      // required: true,
     },
     estimatedCompletion: {
       type: Date,
-      // required: true,
+    },
+    pickup: {
+      type: String,
     },
     progress: {
       type: [
@@ -38,11 +38,11 @@ const TrackOrderSchema = new Schema(
               "Ready for Drop",
               "Dropped",
             ],
-            // required: true,
+    
           },
           timestamp: {
             type: Date,
-            // required: true,
+    
           },
         },
       ],
