@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const {
-  getCarNewses,
-  getCarNews,
-  createCarNews,
-  updateCarNews,
-  deleteCarNews,
-} = require("../controllers/aritcle");
 
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const {
+  getCarById,
+
+} = require("../services/car-services");
+const { getCarNews, createCarNews, updateCarNews, deleteCarNews } = require("../controllers/CarNewsCtrl");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
   cloud_name: "dbrvq9uxa",
@@ -19,7 +17,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "images/Car",
+    folder: "images/CarNews",
     allowed_formats: [
       "jpg",
       "jpeg",
@@ -35,7 +33,7 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 
-router.get("/carnews", getCarNewses);
+router.get("/carnews", getCarById);
 router.get("/carnews/:id", getCarNews);
 router.post("/carnews", upload.single("image"), createCarNews);
 router.put("/carnews/:id", updateCarNews);

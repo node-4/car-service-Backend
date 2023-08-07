@@ -3,7 +3,7 @@ const CarNews = require("../models/CarNewsModel");
 const moment = require("moment-timezone");
 
 // Get all articles
-exports.getCarNewses = async (req, res) => {
+exports.getCarNewsById = async (req, res) => {
   try {
     const articles = await CarNews.find();
     if (!articles || articles.length === 0) {
