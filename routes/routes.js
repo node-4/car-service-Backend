@@ -29,4 +29,5 @@ router.use("/", require("./UsedCarRoute"));
 router.use("/", require("./carLoanRoute"));
 router.use("/", require("./BookingVerificationRoute"));
 router.use("/", require("../routes/TrackOrderRoute"));
+router.use("/", require("../routes/CarNewsRoute"));
 module.exports = router;
